@@ -1,0 +1,35 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/a3c87ab5/
+NUM_OBJS	objects.c	/^#define NUM_OBJS /;"	d	file:
+OBJECTS_H	objects.h	/^#define OBJECTS_H$/;"	d
+Obj	objects.h	/^typedef struct Obj$/;"	s
+Obj	objects.h	/^} Obj;$/;"	t	typeref:struct:Obj
+PIXEL_SIZE	screen.c	/^#define PIXEL_SIZE /;"	d	file:
+SCREEN_HEIGHT	main.c	/^const int SCREEN_HEIGHT = 400;$/;"	v	typeref:typename:const int
+SCREEN_HEIGHT	screen.c	/^#define SCREEN_HEIGHT /;"	d	file:
+SCREEN_LENGTH	main.c	/^const int SCREEN_LENGTH = 400;$/;"	v	typeref:typename:const int
+SCREEN_LENGTH	screen.c	/^#define SCREEN_LENGTH /;"	d	file:
+close_stuff	main.c	/^void close_stuff(SDL_Window* window, SDL_Renderer* renderer)$/;"	f	typeref:typename:void
+draw_obj	objects.c	/^void draw_obj(SDL_Renderer* renderer, Obj obj)$/;"	f	typeref:typename:void
+draw_objs	objects.c	/^void draw_objs(SDL_Renderer* renderer)$/;"	f	typeref:typename:void
+draw_pixel	screen.c	/^void draw_pixel(SDL_Renderer* renderer, uint32_t row, uint32_t col)$/;"	f	typeref:typename:void
+draw_screen	screen.c	/^void draw_screen(SDL_Renderer* renderer)$/;"	f	typeref:typename:void
+get_player	objects.c	/^void get_player(Obj* player)$/;"	f	typeref:typename:void
+get_screen_pos	screen.c	/^int get_screen_pos(uint32_t row, uint32_t col)$/;"	f	typeref:typename:int
+h	objects.h	/^	int h;$/;"	m	struct:Obj	typeref:typename:int
+hit_box	objects.h	/^	SDL_Rect* hit_box;$/;"	m	struct:Obj	typeref:typename:SDL_Rect *
+init	main.c	/^bool init(SDL_Window** window, SDL_Renderer** renderer)$/;"	f	typeref:typename:bool
+main	main.c	/^int main(int argc, char** argv)$/;"	f	typeref:typename:int
+objs	objects.c	/^Obj objs[NUM_OBJS];$/;"	v	typeref:typename:Obj[]
+screen	screen.c	/^static uint16_t screen[SCREEN_LENGTH * SCREEN_HEIGHT];$/;"	v	typeref:typename:uint16_t[]	file:
+set_screen_pos	screen.c	/^void set_screen_pos(uint32_t row, uint32_t col, int value)$/;"	f	typeref:typename:void
+texture	objects.h	/^	SDL_Texture* texture;$/;"	m	struct:Obj	typeref:typename:SDL_Texture *
+w	objects.h	/^	int w;$/;"	m	struct:Obj	typeref:typename:int
+x	objects.h	/^	int x;$/;"	m	struct:Obj	typeref:typename:int
+y	objects.h	/^	int y;$/;"	m	struct:Obj	typeref:typename:int
