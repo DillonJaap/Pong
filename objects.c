@@ -8,16 +8,6 @@
 
 Obj objs[NUM_OBJS];
 
-
-Obj init_player(SDL_Renderer* renderer)
-{
-	Obj player = {.x = 0, .y = 0, .h = 15, .w = 7};
-	SDL_Surface* surface = SDL_LoadBMP("./player.bmp");
-	player.texture = SDL_CreateTextureFromSurface(renderer, surface);
-	player.hit_box = NULL;
-	return player;
-}
-
 void draw_obj(SDL_Renderer* renderer, Obj obj)
 {
 	SDL_Rect renderer_rect = {obj.x * SCALE, obj.y * SCALE, obj.w * SCALE, obj.h * SCALE};
