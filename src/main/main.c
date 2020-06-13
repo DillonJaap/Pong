@@ -2,14 +2,18 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <stdbool.h>
-#include "screen.h"
+#include "vector.h"
+#include "collision.h"
 #include "objects.h"
+#include "walls.h"
 #include "player.h"
+#include "ball.h"
 #include "error.h"
+#include "common.h"
 
-const int SCREEN_LENGTH = 400;
-const int SCREEN_HEIGHT = 400;
-
+#define SCALE 1
+#define SCREEN_LENGTH 700
+#define SCREEN_HEIGHT 500
 
 bool init(SDL_Window** window, SDL_Renderer** renderer)
 {
@@ -20,7 +24,7 @@ bool init(SDL_Window** window, SDL_Renderer** renderer)
 	printf("ttf\n");
 
 
-	*window = SDL_CreateWindow("SDL Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_LENGTH, 
+	*window = SDL_CreateWindow("SDL Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_LENGTH,
 		SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	check_null((void*)window, NULL);
 
@@ -58,7 +62,7 @@ bool quit()
 
 void draw_text(SDL_Renderer* renderer, char* text, TTF_Font* font)
 {
-	SDL_Rect* pos = &(SDL_Rect){0,0,40,40};
+	SDL_Rect* pos = &(SDL_Rect){0, 0, 40, 80};
 	SDL_Color text_color = {0, 0, 0};
 
 	SDL_Surface* text_surface = TTF_RenderText_Solid(font, text, text_color);
@@ -70,6 +74,11 @@ void draw_text(SDL_Renderer* renderer, char* text, TTF_Font* font)
 	SDL_RenderCopy(renderer, text_texture, NULL, &(text_surface->clip_rect));
 }
 
+int calculacte_fps(int num_frames, int start_time)
+{
+	return num_frames / ((SDL_GetTicks() - start_time) / 1000.f);
+}
+
 int main(int argc, char** argv)
 {
 	// create window and renderer
@@ -77,11 +86,14 @@ int main(int argc, char** argv)
 	SDL_Renderer* renderer = NULL;
 	init(&window, &renderer);
 
-	TTF_Font* font = TTF_OpenFont("./UbuntuMono-Regular.ttf", 28);
+	TTF_Font* font = TTF_OpenFont("assets/UbuntuMono-Regular.ttf", 18);
 	check_null((void*)font, NULL);
 
-	Obj player = init_player(renderer);
-	char time_str[16] = "0";
+	init_walls(renderer);
+	init_balls(renderer);
+	init_players(renderer);
+
+	char time_str[100] = "0";
 
 	Uint32 start_time = SDL_GetTicks();
 	Uint32 num_frames = 0;
@@ -90,14 +102,18 @@ int main(int argc, char** argv)
 	while (!quit())
 	{
 		// handle_inputs
-		handle_player_input(&player);
+		handle_player_input();
+		move_player();
+		move_ball();
 
 		// clear screen
 		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 		SDL_RenderClear(renderer);
 
 		// draw various game objects and text
-		draw_obj(renderer, player);
+		draw_players(renderer);
+		draw_balls(renderer);
+		draw_walls(renderer);
 		draw_text(renderer, time_str, font);
 
 		// update screen
@@ -107,10 +123,10 @@ int main(int argc, char** argv)
 		num_frames++;
 
 		// calculate FPS 
-		if (num_frames % 30 == 0)
+		if (num_frames % 1 == 0)
 		{
-			avg_fps = num_frames / ((SDL_GetTicks() - start_time) / 1000.f);
-			snprintf(time_str, 16, "FPS: %lf", avg_fps);
+			avg_fps = calculacte_fps(num_frames, start_time);
+			snprintf(time_str, 100, "FPS: %.2lf ", avg_fps);
 		}
 
 		// reset fps count
