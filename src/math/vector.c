@@ -2,16 +2,19 @@
 #include <stdbool.h>
 #include "vector.h"
 
+// TODO, make it apply result instead of returning result?
 Vector2 vector_add(Vector2 v1, Vector2 v2)
 {
 	return (Vector2){v1.x + v2.x, v1.y + v2.y};
 }
 
+// TODO, make it apply result instead of returning result?
 Vector2 vector_sub(Vector2 v1, Vector2 v2)
 {
 	return (Vector2){v1.x - v2.x, v1.y - v2.y};
 }
 
+// TODO, make it apply result instead of returning result?
 Vector2 vector_scale(Vector2 v, double scalar)
 {
 	return (Vector2){v.x * scalar, v.y * scalar};

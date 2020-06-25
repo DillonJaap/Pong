@@ -7,6 +7,7 @@
 #include "vector.h"
 #include "collision.h"
 
+Obj* get_walls();
 void init_walls(SDL_Renderer* renderer);
 bool collides_with_wall(SDL_Rect hit_box, Obj** wall);
 void draw_walls(SDL_Renderer* renderer);

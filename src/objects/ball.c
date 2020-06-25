@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <math.h>
 #include "vector.h"
+#include "physics.h"
 #include "collision.h"
 #include "player.h"
 #include "objects.h"
@@ -14,9 +15,9 @@ static Ball balls[NUM_BALLS];
 
 void init_balls(SDL_Renderer* renderer)
 {
-	SDL_Surface* surface = SDL_LoadBMP("../../assests/player.bmp");
+	SDL_Surface* surface = SDL_LoadBMP("./assets/player.bmp");
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-   	balls[0].col = (SDL_Rect){.x = 50, .y = 5, .h = 15, .w = 7};
+   	balls[0].col = (SDL_Rect){.x = 50, .y = 50, .h = 10, .w = 10};
 
 	for (int i = 0; i < NUM_BALLS; i++)
 	{
@@ -24,6 +25,11 @@ void init_balls(SDL_Renderer* renderer)
 		balls[i].vel.x = 3.0;
 		balls[i].vel.y = 0.5;
 	}
+}
+
+Ball* get_balls()
+{
+	return balls;
 }
 
 void draw_balls(SDL_Renderer* renderer)
@@ -43,48 +49,46 @@ static void limit_velocity(Ball* ball)
 	}
 }
 
-
-
-void move_ball()
+// bound ball 1 for vertical, 2 for horizontal
+void ball_bounce(Ball* b, int side, double multiplier)
 {
-	Obj* wall;
+		if (side == 1)
+			b->vel.x *= -multiplier;
+		else if (side == 2)
+			b->vel.y *= -multiplier;
+}
+
+void ball_handle_collisions(Ball* b, SDL_Rect prev_col)
+{
 	Player* player;
-/*
-	balls[0].col.x += balls[0].vel.x;
-	if (collides_with_player(balls[0].col, &player))
+	Obj* wall;
+
+	if (collides_with_player(b->col, &player))
 	{
-		snap_to_rec(&balls[0].col, &(player->col), balls[0].vel);
-		balls[0].vel.x *= -0.9;
-		balls[0].vel.y += player->yvel * 0.5;
-	}
-	else if (collides_with_wall(balls[0].col, &wall))
-	{
-		snap_to_rec(&balls[0].col, &(wall->col), balls[0].vel);
-		balls[0].vel.x *= -0.9;
-	}
-	else if (collides_with_right_edge(balls[0].col) || collides_with_left_edge(balls[0].col))
-	{
-		snap_to_vertical_edge(&balls[0].col, balls[0].vel);
-		balls[0].vel.x *= -0.9;
-	}
-	
-	balls[0].col.y += balls[0].vel.y;
-	if (collides_with_player(balls[0].col, &player))
-	{
-		snap_to_rec(&balls[0].col, &(player->col), balls[0].vel);
-		balls[0].vel.y *= -1.0;
-	}
-	else if (collides_with_wall(balls[0].col, &wall))
-	{
-		snap_to_rec(&balls[0].col, &(wall->col), balls[0].vel);
-		balls[0].vel.y *= -1.0;
-	}
-	else if (collides_with_top_edge(balls[0].col) || collides_with_bottom_edge(balls[0].col))
-	{
-		snap_to_horizontal_edge(&balls[0].col, balls[0].vel);
-		balls[0].vel.y *= -1.0;
+		int side = snap_to_rect(prev_col, &b->col, player->col);
+		ball_bounce(b, side, 0.9);
+		if (side == 1)
+			b->vel.y += player->vel.y * 0.5;
 	}
 
-	limit_velocity(&balls[0]);
-	*/
+	if (collides_with_wall(b->col, &wall))
+	{
+		int side = snap_to_rect(prev_col, &b->col, wall->col);
+		ball_bounce(b, side, 1.0);
+	}
+
+	if (collides_with_edge(b->col))
+	{
+		int side = snap_to_edge(&b->col);
+		ball_bounce(b, side, 1.0);
+	}
+}
+
+void move_ball(Ball* b)
+{
+	SDL_Rect prev_col = b->col;
+
+	apply_velocity(&b->col, b->vel);
+	ball_handle_collisions(b, prev_col);
+	limit_velocity(b);
 }

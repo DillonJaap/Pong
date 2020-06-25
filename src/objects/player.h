@@ -13,11 +13,13 @@ typedef struct Player
 	Vector2 vel;
 } Player;
 
+Player* get_players();
+Player* get_player1();
 void init_players(SDL_Renderer* renderer);
 void draw_players(SDL_Renderer* renderer);
-void handle_player_input();
-void move_player();
-bool player_collides(Player player);
+void handle_player_input(Player* p);
+void player_handle_collisions(Player* p, SDL_Rect prev_col);
+void move_player(Player* p);
 bool collides_with_player(SDL_Rect hit_box, Player** player);
 
 #endif

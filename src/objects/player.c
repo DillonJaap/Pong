@@ -4,82 +4,89 @@
 #include "player.h"
 #include "objects.h"
 #include "walls.h"
+#include "physics.h"
 
 
 #define NUM_PLAYERS 1
 #define PLAYER_FRICTION 0.85
 static Player players[NUM_PLAYERS];
 
+Player* get_players()
+{
+	return players;
+}
+
+Player* get_player1()
+{
+	return &players[0];
+}
+
 void init_players(SDL_Renderer* renderer)
 {
 	SDL_Surface* surface = SDL_LoadBMP("assets/player.bmp");
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-   	players[0].col = (SDL_Rect){.x = 0, .y = 0, .h = 50, .w = 7};
+   	players[0].col = (SDL_Rect){.x = 0, .y = 0, .h = 65, .w = 20};
    	players[1].col = (SDL_Rect){.x = 400, .y = 0, .h = 30, .w = 7};
 
 	for (int i = 0; i < NUM_PLAYERS; i++)
 		players[i].texture = texture;
 }
+
 void draw_players(SDL_Renderer* renderer)
 {
 	for (int i = 0; i < NUM_PLAYERS; i++)
 		SDL_RenderCopyEx(renderer, players[i].texture, NULL, &(players[i].col), 1, NULL, SDL_FLIP_NONE);
 }
 
-void handle_player_input()
+void handle_player_input(Player* p)
 {
 	const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 	if (currentKeyStates[SDL_SCANCODE_UP])
-		players[0].vel.y += -1.4;
+		p->vel.y += -1.4;
 	else if (currentKeyStates[SDL_SCANCODE_DOWN])
-		players[0].vel.y += 1.4;
+		p->vel.y += 1.4;
 
 	if (currentKeyStates[SDL_SCANCODE_LEFT])
-		players[0].vel.x += -1.4;
+		p->vel.x += -1.4;
 	else if (currentKeyStates[SDL_SCANCODE_RIGHT])
-		players[0].vel.x += 1.4;
+		p->vel.x += 1.4;
 	else
 	{
-		if (players[0].vel.x < 0.5 && players[0].vel.x > -0.5)
-			players[0].vel.x = 0.0;
-		if (players[0].vel.y < 0.5 && players[0].vel.y > -0.5)
-			players[0].vel.y = 0.0;
+		if (p->vel.x < 0.5 && p->vel.x > -0.5)
+			p->vel.x = 0.0;
+		if (p->vel.y < 0.5 && p->vel.y > -0.5)
+			p->vel.y = 0.0;
 	}
 }
 
-void player_update_xpos()
+
+// parameter is previous collision box before applying velocity
+void player_handle_collisions(Player* p, SDL_Rect prev_col)
 {
 	Obj* wall;
-	players[0].col.x += players[0].vel.x;
-
-	if (collides_with_wall(players[0].col, &wall))
+	if (collides_with_wall(p->col, &wall))
 	{
-		Vector2 xvel = (Vector2){players[0].vel.x, 0};
-		snap_to_rec(&players[0].col, &wall->col, xvel);
-		players[0].vel.x == 0.0;
+		int side = snap_to_rect(prev_col, &p->col,  wall->col);
+		if (side == 1)
+			p->vel.x = 0;
+		else if (side == 2)
+			p->vel.y = 0;
+	}
+
+	if (collides_with_edge(p->col))
+	{
+		snap_to_edge(&p->col);
 	}
 }
 
-void player_update_ypos()
+void move_player(Player* p)
 {
-	Obj* wall;
-	players[0].col.y += players[0].vel.y;
+	SDL_Rect prev_col = p->col;
 
-	if (collides_with_wall(players[0].col, &wall))
-	{
-		Vector2 yvel = (Vector2){0, players[0].vel.y};
-		snap_to_rec(&players[0].col, &wall->col, yvel);
-		players[0].vel.y == 0.0;
-	}
-}
-
-void move_player()
-{
-	player_update_xpos();
-	player_update_ypos();
-	players[0].vel.x *= PLAYER_FRICTION;
-	players[0].vel.y *= PLAYER_FRICTION;
+	apply_velocity(&p->col, p->vel);
+	player_handle_collisions(p, prev_col);
+	apply_friction(&p->vel, PLAYER_FRICTION);
 }
 
 bool collides_with_player(SDL_Rect hit_box, Player** player)

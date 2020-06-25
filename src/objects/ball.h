@@ -17,7 +17,11 @@ typedef struct Ball
 } Ball;
 
 void init_balls(SDL_Renderer* renderer);
+Ball* get_balls();
 void draw_balls(SDL_Renderer* renderer);
-void move_ball();
+static void limit_velocity(Ball* ball);
+void ball_bounce(Ball* b, int side, double multiplier);
+void ball_handle_collisions(Ball* b, SDL_Rect prev_col);
+void move_ball(Ball* b);
 
 #endif

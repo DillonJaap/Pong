@@ -89,9 +89,12 @@ int main(int argc, char** argv)
 	TTF_Font* font = TTF_OpenFont("assets/UbuntuMono-Regular.ttf", 18);
 	check_null((void*)font, NULL);
 
+	init_players(renderer);
 	init_walls(renderer);
 	init_balls(renderer);
-	init_players(renderer);
+
+	Player* p1 = get_player1();
+	Ball* ball = get_balls();
 
 	char time_str[100] = "0";
 
@@ -102,9 +105,11 @@ int main(int argc, char** argv)
 	while (!quit())
 	{
 		// handle_inputs
-		handle_player_input();
-		move_player();
-		move_ball();
+		handle_player_input(p1);
+		
+		// move objects
+		move_player(p1);
+		move_ball(&ball[0]);
 
 		// clear screen
 		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
