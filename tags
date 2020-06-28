@@ -8,17 +8,16 @@
 !_TAG_PROGRAM_VERSION	0.0.0	/a3c87ab5/
 BALL_H	src/objects/ball.h	/^#define BALL_H$/;"	d
 BALL_MAX_VEL	src/objects/ball.c	/^#define BALL_MAX_VEL /;"	d	file:
+BOTTOM	src/math/collision.h	/^	BOTTOM$/;"	e	enum:SIDE
 Ball	src/objects/ball.h	/^typedef struct Ball$/;"	s
 Ball	src/objects/ball.h	/^} Ball;$/;"	t	typeref:struct:Ball
 CC	makefile	/^CC=gcc$/;"	m
 CFILES	makefile	/^CFILES=$(wildcard src\/main\/*.c)\\$/;"	m
 CFLAGS	makefile	/^CFLAGS=-I.\/src\/main\/ -I.\/src\/objects\/ -I.\/src\/math\/ -I.\/src\/error\/ -I\/usr\/include\//;"	m
 COLLISION_H	src/math/collision.h	/^#define COLLISION_H$/;"	d
-DOWN	src/objects/objects.h	/^	DOWN,$/;"	e	enum:Dir
-Dir	src/objects/objects.h	/^typedef enum Dir$/;"	g
-Dir	src/objects/objects.h	/^} Dir;$/;"	t	typeref:enum:Dir
 ERROR_H	src/error/error.h	/^#define ERROR_H$/;"	d
-LEFT	src/objects/objects.h	/^	LEFT,$/;"	e	enum:Dir
+LEFT	src/math/collision.h	/^	LEFT,$/;"	e	enum:SIDE
+NO_SIDE	src/math/collision.h	/^	NO_SIDE,$/;"	e	enum:SIDE
 NUM_BALLS	src/objects/ball.c	/^#define NUM_BALLS /;"	d	file:
 NUM_OBJS	src/objects/objects.h	/^#define NUM_OBJS /;"	d
 NUM_PLAYERS	src/objects/player.c	/^#define NUM_PLAYERS /;"	d	file:
@@ -31,14 +30,16 @@ PLAYER_FRICTION	src/objects/player.c	/^#define PLAYER_FRICTION /;"	d	file:
 PLAYER_H	src/objects/player.h	/^#define PLAYER_H$/;"	d
 Player	src/objects/player.h	/^typedef struct Player$/;"	s
 Player	src/objects/player.h	/^} Player;$/;"	t	typeref:struct:Player
-RIGHT	src/objects/objects.h	/^	RIGHT,$/;"	e	enum:Dir
+RIGHT	src/math/collision.h	/^	RIGHT,$/;"	e	enum:SIDE
 SCALE	src/main/common.h	/^#define SCALE /;"	d
 SCALE	src/main/main.c	/^#define SCALE /;"	d	file:
 SCREEN_HEIGHT	src/main/common.h	/^#define SCREEN_HEIGHT /;"	d
 SCREEN_HEIGHT	src/main/main.c	/^#define SCREEN_HEIGHT /;"	d	file:
 SCREEN_LENGTH	src/main/common.h	/^#define SCREEN_LENGTH /;"	d
 SCREEN_LENGTH	src/main/main.c	/^#define SCREEN_LENGTH /;"	d	file:
-UP	src/objects/objects.h	/^	UP,$/;"	e	enum:Dir
+SIDE	src/math/collision.h	/^typedef enum SIDE {$/;"	g
+SIDE	src/math/collision.h	/^} SIDE;$/;"	t	typeref:enum:SIDE
+TOP	src/math/collision.h	/^	TOP,$/;"	e	enum:SIDE
 VECTOR_H	src/math/vector.h	/^#define VECTOR_H$/;"	d
 Vector2	src/math/vector.h	/^typedef struct Vector2 $/;"	s
 Vector2	src/math/vector.h	/^} Vector2;$/;"	t	typeref:struct:Vector2
@@ -73,6 +74,7 @@ draw_walls	src/objects/walls.c	/^void draw_walls(SDL_Renderer* renderer)$/;"	f	t
 get_balls	src/objects/ball.c	/^Ball* get_balls()$/;"	f	typeref:typename:Ball *
 get_midpoint	src/math/vector.c	/^Vector2 get_midpoint(SDL_Rect r)$/;"	f	typeref:typename:Vector2
 get_player1	src/objects/player.c	/^Player* get_player1()$/;"	f	typeref:typename:Player *
+get_player2	src/objects/player.c	/^Player* get_player2()$/;"	f	typeref:typename:Player *
 get_players	src/objects/player.c	/^Player* get_players()$/;"	f	typeref:typename:Player *
 get_walls	src/objects/walls.c	/^Obj* get_walls()$/;"	f	typeref:typename:Obj *
 handle_player_input	src/objects/player.c	/^void handle_player_input(Player* p)$/;"	f	typeref:typename:void
@@ -83,6 +85,7 @@ init_walls	src/objects/walls.c	/^void init_walls(SDL_Renderer* renderer)$/;"	f	t
 limit_velocity	src/objects/ball.c	/^static void limit_velocity(Ball* ball)$/;"	f	typeref:typename:void	file:
 lines_intersect	src/math/vector.c	/^bool lines_intersect(Vector2 v1_beg, Vector2 v1_end, Vector2 v2_beg, Vector2 v2_end)$/;"	f	typeref:typename:bool
 main	src/main/main.c	/^int main(int argc, char** argv)$/;"	f	typeref:typename:int
+max	src/main/common.c	/^int max(int a, int b)$/;"	f	typeref:typename:int
 move_ball	src/objects/ball.c	/^void move_ball(Ball* b)$/;"	f	typeref:typename:void
 move_player	src/objects/player.c	/^void move_player(Player* p)$/;"	f	typeref:typename:void
 obj	makefile	/^obj=$(CFILES:.c=.o)$/;"	m
@@ -91,6 +94,7 @@ players	src/objects/player.c	/^static Player players[NUM_PLAYERS];$/;"	v	typeref
 pong	makefile	/^pong: $(obj)$/;"	t
 print_error	src/error/error.c	/^void print_error(char* msg)$/;"	f	typeref:typename:void
 quit	src/main/main.c	/^bool quit()$/;"	f	typeref:typename:bool
+repel_rect	src/math/collision.c	/^SIDE repel_rect(SDL_Rect* recta, SDL_Rect recta_prev, SDL_Rect rectb)$/;"	f	typeref:typename:SIDE
 snap_to_edge	src/math/collision.c	/^int snap_to_edge(SDL_Rect* rec)$/;"	f	typeref:typename:int
 snap_to_rect	src/math/collision.c	/^int snap_to_rect(SDL_Rect a_prev, SDL_Rect* a_cur, SDL_Rect b_cur)$/;"	f	typeref:typename:int
 texture	src/objects/ball.h	/^	SDL_Texture* texture;$/;"	m	struct:Ball	typeref:typename:SDL_Texture *

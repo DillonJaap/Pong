@@ -6,26 +6,21 @@
 #include "vector.h"
 #include "collision.h"
 
-
-bool collides(SDL_Rect a, SDL_Rect b)
+Hitbox init_hitbox(int x, int y, int w, int h)
 {
-	int leftA   = a.x;
-	int rightA  = a.x + a.w;
-	int topA    = a.y;
-	int bottomA = a.y + a.h;
+	return (Hitbox) {.top = y, .left = x, .right = x + w, .bottom = y + h};
+}
 
-	int leftB   = b.x;
-	int rightB  = b.x + b.w;
-	int topB    = b.y;
-	int bottomB = b.y + b.h;
 
-	if (leftA >= rightB)
+bool collides(Hitbox a, Hitbox b)
+{
+	if (a.left >= b.right)
 		return false;
-	if (rightA <= leftB)
+	if (a.right <= b.left)
 		return false;
-	if (topA >= bottomB)
+	if (a.top >= b.bottom)
 		return false;
-	if (bottomA <= topB)
+	if (a.bottom <= b.top)
 		return false;
 	return true;
 }
@@ -85,6 +80,50 @@ int snap_to_rect(SDL_Rect a_prev, SDL_Rect* a_cur, SDL_Rect b_cur)
 
 	//snap = (Vector2){x_dist, -1 * dir.y * (x_dist / dir.x)};
 	//snap = (Vector2){dir.x * (y_dist / dir.y), y_dist};
+}
+
+// repel rectangle and return the side of b that a hit
+SIDE repel_rect(SDL_Rect* recta, SDL_Rect recta_prev, SDL_Rect rectb)
+{
+	int horizontal_dist = 0;
+	int vertical_dist = 0;
+	SIDE horizontal_side = NO_SIDE;
+	SIDE vertical_side   = NO_SIDE;
+
+	if (recta_prev.x > rectb.x + rectb.w)
+	{
+		horizontal_dist = recta->x - (rectb.x + rectb.w);
+		horizontal_side = RIGHT;
+	}
+	else if (recta_prev.x + recta_prev.w < rectb.x)
+	{
+		horizontal_dist = (recta->x + recta->w) - rectb.x;
+		horizontal_side = LEFT;
+	}
+	printf("horizontal dist: %d\n", horizontal_dist);
+
+	if (recta_prev.y > rectb.y + rectb.h)
+	{
+		vertical_dist = recta->y - (rectb.y + rectb.h);
+		vertical_side = BOTTOM;
+	}
+	else if (recta_prev.y + recta_prev.h < rectb.y)
+	{
+		vertical_dist = (recta_prev.y + recta_prev.h) - rectb.y;
+		vertical_side = TOP;
+	}
+	printf("vertical dist: %d\n", vertical_dist);
+
+	if (abs(vertical_dist) < abs(horizontal_dist))
+	{
+		recta->y += vertical_dist;
+		return vertical_side;
+	}
+	else
+	{
+		recta->x += horizontal_dist;
+		return horizontal_side;
+	}
 }
 
 // test if rec collides with right edge of game screen

@@ -5,9 +5,10 @@
 #include "objects.h"
 #include "walls.h"
 #include "physics.h"
+#include "common.h"
 
 
-#define NUM_PLAYERS 1
+#define NUM_PLAYERS 2
 #define PLAYER_FRICTION 0.85
 static Player players[NUM_PLAYERS];
 
@@ -21,13 +22,18 @@ Player* get_player1()
 	return &players[0];
 }
 
+Player* get_player2()
+{
+	return &players[1];
+}
+
 void init_players(SDL_Renderer* renderer)
 {
 	SDL_Surface* surface = SDL_LoadBMP("assets/player.bmp");
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-   	players[0].col = (SDL_Rect){.x = 0, .y = 0, .h = 65, .w = 20};
-   	players[1].col = (SDL_Rect){.x = 400, .y = 0, .h = 30, .w = 7};
+   	players[0].hb = init_hitbox(0,   0, 75, 10);
+   	players[1].hb = init_hitbox(700, 0, 75, 10);
 
 	for (int i = 0; i < NUM_PLAYERS; i++)
 		players[i].texture = texture;
@@ -46,18 +52,15 @@ void handle_player_input(Player* p)
 		p->vel.y += -1.4;
 	else if (currentKeyStates[SDL_SCANCODE_DOWN])
 		p->vel.y += 1.4;
-
 	if (currentKeyStates[SDL_SCANCODE_LEFT])
 		p->vel.x += -1.4;
 	else if (currentKeyStates[SDL_SCANCODE_RIGHT])
 		p->vel.x += 1.4;
-	else
-	{
-		if (p->vel.x < 0.5 && p->vel.x > -0.5)
-			p->vel.x = 0.0;
-		if (p->vel.y < 0.5 && p->vel.y > -0.5)
-			p->vel.y = 0.0;
-	}
+
+	if (p->vel.x < 0.5 && p->vel.x > -0.5)
+		p->vel.x = 0.0;
+	if (p->vel.y < 0.5 && p->vel.y > -0.5)
+		p->vel.y = 0.0;
 }
 
 

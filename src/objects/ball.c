@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <math.h>
+#include "common.h"
 #include "vector.h"
 #include "physics.h"
 #include "collision.h"
@@ -63,12 +64,48 @@ void ball_handle_collisions(Ball* b, SDL_Rect prev_col)
 	Player* player;
 	Obj* wall;
 
+	/*
 	if (collides_with_player(b->col, &player))
 	{
 		int side = snap_to_rect(prev_col, &b->col, player->col);
-		ball_bounce(b, side, 0.9);
 		if (side == 1)
-			b->vel.y += player->vel.y * 0.5;
+		{
+			if ((b->vel.x < 0 && player->vel.x < 0) || (b->vel.x > 0 && player->vel.x > 0))
+				b->vel.x = player->vel.x;
+			else
+				b->vel.x *= -1.2;
+		}
+		if (side == 2)
+		{
+			if ((b->vel.y < 0 && player->vel.y < 0) || (b->vel.y > 0 && player->vel.y > 0))
+				b->vel.y = player->vel.y;
+			else
+				b->vel.y *= -1.2;
+		}
+	}
+	*/
+
+	if (collides_with_player(b->col, &player))
+	{
+		SIDE side = repel_rect(&b->col, prev_col, player->col);
+		printf("%d\n", side);
+		switch (side)
+		{
+			case LEFT: 
+			case RIGHT: 
+				b->vel.x *= -1.0;
+				break;
+			case TOP: 
+			case BOTTOM: 
+				b->vel.y *= -1.0;
+				break;
+		}
+
+		/*
+		b->vel = vector_scale(b->vel, 1.1);
+		b->vel.x *= -1.0;
+		b->vel.y += player->vel.y * 0.5;
+		*/
 	}
 
 	if (collides_with_wall(b->col, &wall))

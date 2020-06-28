@@ -94,6 +94,7 @@ int main(int argc, char** argv)
 	init_balls(renderer);
 
 	Player* p1 = get_player1();
+	Player* p2 = get_player2();
 	Ball* ball = get_balls();
 
 	char time_str[100] = "0";
@@ -106,10 +107,12 @@ int main(int argc, char** argv)
 	{
 		// handle_inputs
 		handle_player_input(p1);
+		handle_player_input(p2);
 		
 		// move objects
-		move_player(p1);
 		move_ball(&ball[0]);
+		move_player(p1);
+		move_player(p2);
 
 		// clear screen
 		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);

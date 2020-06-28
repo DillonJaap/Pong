@@ -8,13 +8,14 @@
 
 typedef struct Player
 {
-	SDL_Rect col;
+	Hitbox hb;
 	SDL_Texture* texture;
 	Vector2 vel;
 } Player;
 
 Player* get_players();
 Player* get_player1();
+Player* get_player2();
 void init_players(SDL_Renderer* renderer);
 void draw_players(SDL_Renderer* renderer);
 void handle_player_input(Player* p);

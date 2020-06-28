@@ -7,14 +7,6 @@
 #include <SDL.h>
 #include <stdbool.h>
 
-typedef enum Dir
-{
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-} Dir;
-
 typedef struct Obj
 {
 	SDL_Rect col;

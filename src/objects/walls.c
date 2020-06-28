@@ -5,7 +5,7 @@
 #include "objects.h"
 #include "walls.h"
 
-#define NUM_WALLS 0
+#define NUM_WALLS 1
 static Obj walls[NUM_WALLS];
 
 Obj* get_walls()
