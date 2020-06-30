@@ -19,7 +19,10 @@ typedef struct Hitbox {
 	int right
 } Hitbox;
 
-bool collides(SDL_Rect a, SDL_Rect b);
+Hitbox init_hitbox(int x, int y, int w, int h);
+SDL_Rect hitbox_to_SDLRect(Hitbox hb);
+
+bool collides(Hitbox a, Hitbox b);
 bool collides_with_right_edge(SDL_Rect rec);
 bool collides_with_left_edge(SDL_Rect rec);
 bool collides_with_bottom_edge(SDL_Rect rec);

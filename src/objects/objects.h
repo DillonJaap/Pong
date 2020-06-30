@@ -9,15 +9,14 @@
 
 typedef struct Obj
 {
-	SDL_Rect col;
+	Hitbox hb;
 	SDL_Texture* texture;
 } Obj;
 
 Obj init_objs(SDL_Renderer* renderer);
 void draw_obj(SDL_Renderer* renderer, Obj obj);
 void draw_objs(SDL_Renderer* renderer, Obj* objs);
-bool collides(SDL_Rect a, SDL_Rect b);
-Obj* collides_with_obj(SDL_Rect hit_box, Obj* objs);
+Obj* collides_with_obj(Hitbox hb, Obj* objs);
 
 
 #endif

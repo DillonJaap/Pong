@@ -18,7 +18,7 @@ void init_balls(SDL_Renderer* renderer)
 {
 	SDL_Surface* surface = SDL_LoadBMP("./assets/player.bmp");
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-   	balls[0].col = (SDL_Rect){.x = 50, .y = 50, .h = 10, .w = 10};
+   	balls[0].hb = init_hitbox(50, 50, 10, 10);
 
 	for (int i = 0; i < NUM_BALLS; i++)
 	{

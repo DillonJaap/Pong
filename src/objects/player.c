@@ -42,7 +42,7 @@ void init_players(SDL_Renderer* renderer)
 void draw_players(SDL_Renderer* renderer)
 {
 	for (int i = 0; i < NUM_PLAYERS; i++)
-		SDL_RenderCopyEx(renderer, players[i].texture, NULL, &(players[i].col), 1, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, players[i].texture, NULL, &hitbox_to_SDLRect(player.hb), 1, NULL, SDL_FLIP_NONE);
 }
 
 void handle_player_input(Player* p)
@@ -65,38 +65,39 @@ void handle_player_input(Player* p)
 
 
 // parameter is previous collision box before applying velocity
-void player_handle_collisions(Player* p, SDL_Rect prev_col)
+void player_handle_collisions(Player* p, Hitbox prev_hb)
 {
 	Obj* wall;
-	if (collides_with_wall(p->col, &wall))
+	if (collides_with_wall(p->hb, &wall))
 	{
-		int side = snap_to_rect(prev_col, &p->col,  wall->col);
+		//int side = snap_to_rect(prev_hb, &p->hb,  wall->hb);
+		int side = 0;
 		if (side == 1)
 			p->vel.x = 0;
 		else if (side == 2)
 			p->vel.y = 0;
 	}
 
-	if (collides_with_edge(p->col))
+	if (collides_with_edge(p->hb))
 	{
-		snap_to_edge(&p->col);
+		snap_to_edge(&p->hb);
 	}
 }
 
 void move_player(Player* p)
 {
-	SDL_Rect prev_col = p->col;
+	Hitbox prev_hb = p->hb;
 
-	apply_velocity(&p->col, p->vel);
-	player_handle_collisions(p, prev_col);
+	apply_velocity(&p->hb, p->vel);
+	player_handle_collisions(p, prev_hb);
 	apply_friction(&p->vel, PLAYER_FRICTION);
 }
 
-bool collides_with_player(SDL_Rect hit_box, Player** player)
+bool collides_with_player(Hitbox hb, Player** player)
 {
 	for (int i = 0; i < NUM_PLAYERS; i++)
 	{
-		if (collides(hit_box, (players[i]).col))
+		if (collides(hb, players[i].hb))
 		{
 			*player = &players[i];
 			return true;

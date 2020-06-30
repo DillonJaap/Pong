@@ -8,9 +8,18 @@
 
 Hitbox init_hitbox(int x, int y, int w, int h)
 {
-	return (Hitbox) {.top = y, .left = x, .right = x + w, .bottom = y + h};
+	return (Hitbox){.top = y, .left = x, .right = x + w, .bottom = y + h};
 }
 
+SDL_Rect hitbox_to_SDLRect(Hitbox hb)
+{
+	return (SDL_Rect){
+		.x = hb.left,
+		.y = hb.top,
+	   	.w = hb.right - hb.left,
+		.h = hb.bottom - hb.top
+	}
+}
 
 bool collides(Hitbox a, Hitbox b)
 {
@@ -23,21 +32,6 @@ bool collides(Hitbox a, Hitbox b)
 	if (a.bottom <= b.top)
 		return false;
 	return true;
-}
-
-// return true if two rects will collide after updating their position based on
-// their velocity
-bool will_collide(SDL_Rect a, Vector2 a_vel, SDL_Rect b, Vector2 b_vel)
-{
-	SDL_Rect a_after = a;
-	a_after.x += a_vel.x;
-	a_after.y += a_vel.y;
-
-	SDL_Rect b_after = a;
-	b_after.x += b_vel.x;
-	b_after.y += b_vel.y;
-
-	return collides(a_after, b_after);
 }
 
 // find what side of b that a will collide with

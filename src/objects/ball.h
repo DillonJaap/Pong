@@ -11,7 +11,7 @@
 
 typedef struct Ball
 {
-	SDL_Rect col;
+	Hitbox hb;
 	Vector2 vel;
 	SDL_Texture* texture;
 } Ball;

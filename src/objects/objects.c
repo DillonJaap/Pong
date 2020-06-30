@@ -6,7 +6,7 @@
 
 void draw_obj(SDL_Renderer* renderer, Obj obj)
 {
-	SDL_RenderCopyEx(renderer, obj.texture, NULL, &(obj.col), 0, NULL, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(renderer, obj.texture, NULL, &hitbox_to_SDLRect(obj.hb), 0, NULL, SDL_FLIP_NONE);
 }
 
 void draw_objs(SDL_Renderer* renderer, Obj* objs)
@@ -16,11 +16,11 @@ void draw_objs(SDL_Renderer* renderer, Obj* objs)
 }
 
 
-Obj* collides_with_obj(SDL_Rect hit_box, Obj* objs)
+Obj* collides_with_obj(Hitbox hb, Obj* objs)
 {
 	for (int i = 0; i < NUM_OBJS; i++)
 	{
-		if (collides(hit_box, (objs[i]).col))
+		if (collides(hit_box, objs[i].hb))
 			return &objs[i];
 	}
 	return NULL;
