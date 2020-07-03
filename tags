@@ -8,7 +8,7 @@
 !_TAG_PROGRAM_VERSION	0.0.0	/a3c87ab5/
 BALL_H	src/objects/ball.h	/^#define BALL_H$/;"	d
 BALL_MAX_VEL	src/objects/ball.c	/^#define BALL_MAX_VEL /;"	d	file:
-BOTTOM	src/math/collision.h	/^	BOTTOM$/;"	e	enum:SIDE
+BOTTOM	src/math/collision.h	/^	BOTTOM = 4$/;"	e	enum:SIDE
 Ball	src/objects/ball.h	/^typedef struct Ball$/;"	s
 Ball	src/objects/ball.h	/^} Ball;$/;"	t	typeref:struct:Ball
 CC	makefile	/^CC=gcc$/;"	m
@@ -16,8 +16,10 @@ CFILES	makefile	/^CFILES=$(wildcard src\/main\/*.c)\\$/;"	m
 CFLAGS	makefile	/^CFLAGS=-I.\/src\/main\/ -I.\/src\/objects\/ -I.\/src\/math\/ -I.\/src\/error\/ -I\/usr\/include\//;"	m
 COLLISION_H	src/math/collision.h	/^#define COLLISION_H$/;"	d
 ERROR_H	src/error/error.h	/^#define ERROR_H$/;"	d
-LEFT	src/math/collision.h	/^	LEFT,$/;"	e	enum:SIDE
-NO_SIDE	src/math/collision.h	/^	NO_SIDE,$/;"	e	enum:SIDE
+Hitbox	src/math/collision.h	/^typedef struct Hitbox {$/;"	s
+Hitbox	src/math/collision.h	/^} Hitbox;$/;"	t	typeref:struct:Hitbox
+LEFT	src/math/collision.h	/^	LEFT = 1,$/;"	e	enum:SIDE
+NO_SIDE	src/math/collision.h	/^	NO_SIDE = 0,$/;"	e	enum:SIDE
 NUM_BALLS	src/objects/ball.c	/^#define NUM_BALLS /;"	d	file:
 NUM_OBJS	src/objects/objects.h	/^#define NUM_OBJS /;"	d
 NUM_PLAYERS	src/objects/player.c	/^#define NUM_PLAYERS /;"	d	file:
@@ -30,7 +32,7 @@ PLAYER_FRICTION	src/objects/player.c	/^#define PLAYER_FRICTION /;"	d	file:
 PLAYER_H	src/objects/player.h	/^#define PLAYER_H$/;"	d
 Player	src/objects/player.h	/^typedef struct Player$/;"	s
 Player	src/objects/player.h	/^} Player;$/;"	t	typeref:struct:Player
-RIGHT	src/math/collision.h	/^	RIGHT,$/;"	e	enum:SIDE
+RIGHT	src/math/collision.h	/^	RIGHT = 2,$/;"	e	enum:SIDE
 SCALE	src/main/common.h	/^#define SCALE /;"	d
 SCALE	src/main/main.c	/^#define SCALE /;"	d	file:
 SCREEN_HEIGHT	src/main/common.h	/^#define SCREEN_HEIGHT /;"	d
@@ -39,32 +41,31 @@ SCREEN_LENGTH	src/main/common.h	/^#define SCREEN_LENGTH /;"	d
 SCREEN_LENGTH	src/main/main.c	/^#define SCREEN_LENGTH /;"	d	file:
 SIDE	src/math/collision.h	/^typedef enum SIDE {$/;"	g
 SIDE	src/math/collision.h	/^} SIDE;$/;"	t	typeref:enum:SIDE
-TOP	src/math/collision.h	/^	TOP,$/;"	e	enum:SIDE
+TOP	src/math/collision.h	/^	TOP = 3,$/;"	e	enum:SIDE
 VECTOR_H	src/math/vector.h	/^#define VECTOR_H$/;"	d
 Vector2	src/math/vector.h	/^typedef struct Vector2 $/;"	s
 Vector2	src/math/vector.h	/^} Vector2;$/;"	t	typeref:struct:Vector2
 WALLS_H	src/objects/walls.h	/^#define WALLS_H$/;"	d
 apply_friction	src/math/physics.c	/^void apply_friction(Vector2* vel, double friction)$/;"	f	typeref:typename:void
-apply_velocity	src/math/physics.c	/^void apply_velocity(SDL_Rect* col, Vector2 vel)$/;"	f	typeref:typename:void
+apply_velocity	src/math/physics.c	/^void apply_velocity(Hitbox* hb, Vector2 vel)$/;"	f	typeref:typename:void
 ball_bounce	src/objects/ball.c	/^void ball_bounce(Ball* b, int side, double multiplier)$/;"	f	typeref:typename:void
-ball_handle_collisions	src/objects/ball.c	/^void ball_handle_collisions(Ball* b, SDL_Rect prev_col)$/;"	f	typeref:typename:void
+ball_handle_collisions	src/objects/ball.c	/^void ball_handle_collisions(Ball* b)$/;"	f	typeref:typename:void
 balls	src/objects/ball.c	/^static Ball balls[NUM_BALLS];$/;"	v	typeref:typename:Ball[]	file:
+bottom	src/math/collision.h	/^	int bottom;$/;"	m	struct:Hitbox	typeref:typename:int
+bounce	src/math/physics.c	/^void bounce(Vector2* avel, Vector2* bvel, SIDE side, double multiplier)$/;"	f	typeref:typename:void
 calculacte_fps	src/main/main.c	/^int calculacte_fps(int num_frames, int start_time)$/;"	f	typeref:typename:int
 check_error	src/error/error.c	/^void check_error(int val, char* msg)$/;"	f	typeref:typename:void
 check_null	src/error/error.c	/^void check_null(void* val, char* msg)$/;"	f	typeref:typename:void
 close_stuff	src/main/main.c	/^void close_stuff(SDL_Window* window, SDL_Renderer* renderer)$/;"	f	typeref:typename:void
-col	src/objects/ball.h	/^	SDL_Rect col;$/;"	m	struct:Ball	typeref:typename:SDL_Rect
-col	src/objects/objects.h	/^	SDL_Rect col;$/;"	m	struct:Obj	typeref:typename:SDL_Rect
-col	src/objects/player.h	/^	SDL_Rect col;$/;"	m	struct:Player	typeref:typename:SDL_Rect
-collides	src/math/collision.c	/^bool collides(SDL_Rect a, SDL_Rect b)$/;"	f	typeref:typename:bool
-collides_with_bottom_edge	src/math/collision.c	/^bool collides_with_bottom_edge(SDL_Rect rec)$/;"	f	typeref:typename:bool
-collides_with_edge	src/math/collision.c	/^bool collides_with_edge(SDL_Rect rec)$/;"	f	typeref:typename:bool
-collides_with_left_edge	src/math/collision.c	/^bool collides_with_left_edge(SDL_Rect rec)$/;"	f	typeref:typename:bool
-collides_with_obj	src/objects/objects.c	/^Obj* collides_with_obj(SDL_Rect hit_box, Obj* objs)$/;"	f	typeref:typename:Obj *
-collides_with_player	src/objects/player.c	/^bool collides_with_player(SDL_Rect hit_box, Player** player)$/;"	f	typeref:typename:bool
-collides_with_right_edge	src/math/collision.c	/^bool collides_with_right_edge(SDL_Rect rec)$/;"	f	typeref:typename:bool
-collides_with_top_edge	src/math/collision.c	/^bool collides_with_top_edge(SDL_Rect rec)$/;"	f	typeref:typename:bool
-collides_with_wall	src/objects/walls.c	/^bool collides_with_wall(SDL_Rect hit_box, Obj** wall)$/;"	f	typeref:typename:bool
+collides	src/math/collision.c	/^bool collides(Hitbox a, Hitbox b)$/;"	f	typeref:typename:bool
+collides_with_bottom_edge	src/math/collision.c	/^bool collides_with_bottom_edge(Hitbox hb)$/;"	f	typeref:typename:bool
+collides_with_edge	src/math/collision.c	/^bool collides_with_edge(Hitbox hb)$/;"	f	typeref:typename:bool
+collides_with_left_edge	src/math/collision.c	/^bool collides_with_left_edge(Hitbox hb)$/;"	f	typeref:typename:bool
+collides_with_obj	src/objects/objects.c	/^Obj* collides_with_obj(Hitbox hb, Obj* objs)$/;"	f	typeref:typename:Obj *
+collides_with_player	src/objects/player.c	/^bool collides_with_player(Hitbox hb, Player** player)$/;"	f	typeref:typename:bool
+collides_with_right_edge	src/math/collision.c	/^bool collides_with_right_edge(Hitbox hb)$/;"	f	typeref:typename:bool
+collides_with_top_edge	src/math/collision.c	/^bool collides_with_top_edge(Hitbox hb)$/;"	f	typeref:typename:bool
+collides_with_wall	src/objects/walls.c	/^bool collides_with_wall(Hitbox hb, Obj** wall)$/;"	f	typeref:typename:bool
 draw_balls	src/objects/ball.c	/^void draw_balls(SDL_Renderer* renderer)$/;"	f	typeref:typename:void
 draw_obj	src/objects/objects.c	/^void draw_obj(SDL_Renderer* renderer, Obj obj)$/;"	f	typeref:typename:void
 draw_objs	src/objects/objects.c	/^void draw_objs(SDL_Renderer* renderer, Obj* objs)$/;"	f	typeref:typename:void
@@ -78,36 +79,49 @@ get_player2	src/objects/player.c	/^Player* get_player2()$/;"	f	typeref:typename:
 get_players	src/objects/player.c	/^Player* get_players()$/;"	f	typeref:typename:Player *
 get_walls	src/objects/walls.c	/^Obj* get_walls()$/;"	f	typeref:typename:Obj *
 handle_player_input	src/objects/player.c	/^void handle_player_input(Player* p)$/;"	f	typeref:typename:void
+hb	src/objects/ball.h	/^	Hitbox hb;$/;"	m	struct:Ball	typeref:typename:Hitbox
+hb	src/objects/objects.h	/^	Hitbox hb;$/;"	m	struct:Obj	typeref:typename:Hitbox
+hb	src/objects/player.h	/^	Hitbox hb;$/;"	m	struct:Player	typeref:typename:Hitbox
+hitbox_to_SDLRect	src/math/collision.c	/^SDL_Rect hitbox_to_SDLRect(Hitbox hb)$/;"	f	typeref:typename:SDL_Rect
 init	src/main/main.c	/^bool init(SDL_Window** window, SDL_Renderer** renderer)$/;"	f	typeref:typename:bool
 init_balls	src/objects/ball.c	/^void init_balls(SDL_Renderer* renderer)$/;"	f	typeref:typename:void
+init_hitbox	src/math/collision.c	/^Hitbox init_hitbox(int x, int y, int w, int h)$/;"	f	typeref:typename:Hitbox
 init_players	src/objects/player.c	/^void init_players(SDL_Renderer* renderer)$/;"	f	typeref:typename:void
 init_walls	src/objects/walls.c	/^void init_walls(SDL_Renderer* renderer)$/;"	f	typeref:typename:void
-limit_velocity	src/objects/ball.c	/^static void limit_velocity(Ball* ball)$/;"	f	typeref:typename:void	file:
+left	src/math/collision.h	/^	int left;$/;"	m	struct:Hitbox	typeref:typename:int
+limit_velocity	src/math/physics.c	/^void limit_velocity(Vector2* vel, double limit)$/;"	f	typeref:typename:void
 lines_intersect	src/math/vector.c	/^bool lines_intersect(Vector2 v1_beg, Vector2 v1_end, Vector2 v2_beg, Vector2 v2_end)$/;"	f	typeref:typename:bool
 main	src/main/main.c	/^int main(int argc, char** argv)$/;"	f	typeref:typename:int
 max	src/main/common.c	/^int max(int a, int b)$/;"	f	typeref:typename:int
 move_ball	src/objects/ball.c	/^void move_ball(Ball* b)$/;"	f	typeref:typename:void
+move_hitbox	src/math/collision.c	/^void move_hitbox(Hitbox* hb, int dx, int dy)$/;"	f	typeref:typename:void
 move_player	src/objects/player.c	/^void move_player(Player* p)$/;"	f	typeref:typename:void
 obj	makefile	/^obj=$(CFILES:.c=.o)$/;"	m
-player_handle_collisions	src/objects/player.c	/^void player_handle_collisions(Player* p, SDL_Rect prev_col)$/;"	f	typeref:typename:void
+player_handle_collisions	src/objects/player.c	/^void player_handle_collisions(Player* p)$/;"	f	typeref:typename:void
 players	src/objects/player.c	/^static Player players[NUM_PLAYERS];$/;"	v	typeref:typename:Player[]	file:
 pong	makefile	/^pong: $(obj)$/;"	t
+prev_hb	src/objects/ball.h	/^	Hitbox prev_hb;$/;"	m	struct:Ball	typeref:typename:Hitbox
+prev_hb	src/objects/player.h	/^	Hitbox prev_hb;$/;"	m	struct:Player	typeref:typename:Hitbox
 print_error	src/error/error.c	/^void print_error(char* msg)$/;"	f	typeref:typename:void
+print_hitbox	src/math/collision.c	/^void print_hitbox(Hitbox hb, char* name)$/;"	f	typeref:typename:void
 quit	src/main/main.c	/^bool quit()$/;"	f	typeref:typename:bool
-repel_rect	src/math/collision.c	/^SIDE repel_rect(SDL_Rect* recta, SDL_Rect recta_prev, SDL_Rect rectb)$/;"	f	typeref:typename:SIDE
-snap_to_edge	src/math/collision.c	/^int snap_to_edge(SDL_Rect* rec)$/;"	f	typeref:typename:int
+resolve_collision	src/math/collision.c	/^int resolve_collision(Hitbox* recta, Hitbox recta_prev, Hitbox rectb, Hitbox rectb_prev)$/;"	f	typeref:typename:int
+right	src/math/collision.h	/^	int right;$/;"	m	struct:Hitbox	typeref:typename:int
+set_hitbox	src/math/collision.c	/^void set_hitbox(Hitbox* hb, int x, int y)$/;"	f	typeref:typename:void
+snap_to_edge	src/math/collision.c	/^int snap_to_edge(Hitbox* hb)$/;"	f	typeref:typename:int
 snap_to_rect	src/math/collision.c	/^int snap_to_rect(SDL_Rect a_prev, SDL_Rect* a_cur, SDL_Rect b_cur)$/;"	f	typeref:typename:int
 texture	src/objects/ball.h	/^	SDL_Texture* texture;$/;"	m	struct:Ball	typeref:typename:SDL_Texture *
 texture	src/objects/objects.h	/^	SDL_Texture* texture;$/;"	m	struct:Obj	typeref:typename:SDL_Texture *
 texture	src/objects/player.h	/^	SDL_Texture* texture;$/;"	m	struct:Player	typeref:typename:SDL_Texture *
+top	src/math/collision.h	/^	int top;$/;"	m	struct:Hitbox	typeref:typename:int
 vector_add	src/math/vector.c	/^Vector2 vector_add(Vector2 v1, Vector2 v2)$/;"	f	typeref:typename:Vector2
 vector_cross	src/math/vector.c	/^double vector_cross(Vector2 v1, Vector2 v2)$/;"	f	typeref:typename:double
 vector_dot	src/math/vector.c	/^double vector_dot(Vector2 v1, Vector2 v2)$/;"	f	typeref:typename:double
+vector_magnitude	src/math/vector.c	/^double vector_magnitude(Vector2 v)$/;"	f	typeref:typename:double
 vector_scale	src/math/vector.c	/^Vector2 vector_scale(Vector2 v, double scalar)$/;"	f	typeref:typename:Vector2
 vector_sub	src/math/vector.c	/^Vector2 vector_sub(Vector2 v1, Vector2 v2)$/;"	f	typeref:typename:Vector2
 vel	src/objects/ball.h	/^	Vector2 vel;$/;"	m	struct:Ball	typeref:typename:Vector2
 vel	src/objects/player.h	/^	Vector2 vel;$/;"	m	struct:Player	typeref:typename:Vector2
 walls	src/objects/walls.c	/^static Obj walls[NUM_WALLS];$/;"	v	typeref:typename:Obj[]	file:
-will_collide	src/math/collision.c	/^bool will_collide(SDL_Rect a, Vector2 a_vel, SDL_Rect b, Vector2 b_vel)$/;"	f	typeref:typename:bool
 x	src/math/vector.h	/^	double x;$/;"	m	struct:Vector2	typeref:typename:double
 y	src/math/vector.h	/^	double y;$/;"	m	struct:Vector2	typeref:typename:double

@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <stdbool.h>
+#include <math.h>
 #include "vector.h"
 
 // TODO, make it apply result instead of returning result?
@@ -30,6 +31,11 @@ double vector_dot(Vector2 v1, Vector2 v2)
 double vector_cross(Vector2 v1, Vector2 v2)
 {
 	return (v1.x * v2.y) - (v1.y * v2.x);
+}
+
+double vector_magnitude(Vector2 v)
+{
+	return sqrtf(powf(v.x, 2.0) + powf(v.y, 2.0));
 }
 
 Vector2 get_midpoint(SDL_Rect r)

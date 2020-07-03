@@ -32,8 +32,8 @@ void init_players(SDL_Renderer* renderer)
 	SDL_Surface* surface = SDL_LoadBMP("assets/player.bmp");
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-   	players[0].hb = init_hitbox(0,   0, 75, 10);
-   	players[1].hb = init_hitbox(700, 0, 75, 10);
+   	players[0].hb = init_hitbox(0,   0, 50, 75);
+   	players[1].hb = init_hitbox(700, 0, 10, 75);
 
 	for (int i = 0; i < NUM_PLAYERS; i++)
 		players[i].texture = texture;
@@ -41,21 +41,25 @@ void init_players(SDL_Renderer* renderer)
 
 void draw_players(SDL_Renderer* renderer)
 {
+	SDL_Rect rect;
 	for (int i = 0; i < NUM_PLAYERS; i++)
-		SDL_RenderCopyEx(renderer, players[i].texture, NULL, &hitbox_to_SDLRect(player.hb), 1, NULL, SDL_FLIP_NONE);
+	{
+		rect = hitbox_to_SDLRect(players[i].hb);
+		SDL_RenderCopyEx(renderer, players[i].texture, NULL, &rect, 1, NULL, SDL_FLIP_NONE);
+	}
 }
 
 void handle_player_input(Player* p)
 {
 	const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 	if (currentKeyStates[SDL_SCANCODE_UP])
-		p->vel.y += -1.4;
+		p->vel.y += -1.0;
 	else if (currentKeyStates[SDL_SCANCODE_DOWN])
-		p->vel.y += 1.4;
+		p->vel.y += 1.0;
 	if (currentKeyStates[SDL_SCANCODE_LEFT])
-		p->vel.x += -1.4;
+		p->vel.x += -1.0;
 	else if (currentKeyStates[SDL_SCANCODE_RIGHT])
-		p->vel.x += 1.4;
+		p->vel.x += 1.0;
 
 	if (p->vel.x < 0.5 && p->vel.x > -0.5)
 		p->vel.x = 0.0;
@@ -65,12 +69,13 @@ void handle_player_input(Player* p)
 
 
 // parameter is previous collision box before applying velocity
-void player_handle_collisions(Player* p, Hitbox prev_hb)
+void player_handle_collisions(Player* p)
 {
 	Obj* wall;
+	Vector2 zero_vel = (Vector2){0.0, 0.0};
 	if (collides_with_wall(p->hb, &wall))
 	{
-		//int side = snap_to_rect(prev_hb, &p->hb,  wall->hb);
+		//int side = snap_to_rect(p->prev_hb, &p->hb,  wall->hb);
 		int side = 0;
 		if (side == 1)
 			p->vel.x = 0;
@@ -80,16 +85,17 @@ void player_handle_collisions(Player* p, Hitbox prev_hb)
 
 	if (collides_with_edge(p->hb))
 	{
-		snap_to_edge(&p->hb);
+		SIDE side = resolve_edge_collision(&p->hb);
+		bounce(&p->vel, &zero_vel, side, 1.0);
 	}
 }
 
 void move_player(Player* p)
 {
-	Hitbox prev_hb = p->hb;
+	p->prev_hb = p->hb;
 
 	apply_velocity(&p->hb, p->vel);
-	player_handle_collisions(p, prev_hb);
+	player_handle_collisions(p);
 	apply_friction(&p->vel, PLAYER_FRICTION);
 }
 

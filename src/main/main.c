@@ -110,9 +110,9 @@ int main(int argc, char** argv)
 		handle_player_input(p2);
 		
 		// move objects
-		move_ball(&ball[0]);
 		move_player(p1);
 		move_player(p2);
+		move_ball(&ball[0]);
 
 		// clear screen
 		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);

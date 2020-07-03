@@ -28,7 +28,7 @@ bool collides_with_wall(Hitbox hb, Obj** wall)
 {
 	for (int i = 0; i < NUM_WALLS; i++)
 	{
-		if (collides(hb, (walls[i]).col))
+		if (collides(hb, (walls[i]).hb))
 		{
 			*wall = &walls[i];
 			return true;
@@ -40,7 +40,11 @@ bool collides_with_wall(Hitbox hb, Obj** wall)
 
 void draw_walls(SDL_Renderer* renderer)
 {
+	SDL_Rect rect;
 	for (int i = 0; i < NUM_WALLS; i++)
-		SDL_RenderCopyEx(renderer, walls[i].texture, NULL, &hitbox_to_SDLRect(walls[i].hb),, 0, NULL, SDL_FLIP_NONE);
+	{
+		rect = hitbox_to_SDLRect(walls[i].hb);
+		SDL_RenderCopyEx(renderer, walls[i].texture, NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+	}
 }
 

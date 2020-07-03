@@ -9,6 +9,7 @@
 typedef struct Player
 {
 	Hitbox hb;
+	Hitbox prev_hb;
 	SDL_Texture* texture;
 	Vector2 vel;
 } Player;
@@ -19,7 +20,7 @@ Player* get_player2();
 void init_players(SDL_Renderer* renderer);
 void draw_players(SDL_Renderer* renderer);
 void handle_player_input(Player* p);
-void player_handle_collisions(Player* p, Hitbox hb);
+void player_handle_collisions(Player* p);
 void move_player(Player* p);
 bool collides_with_player(Hitbox hb, Player** player);
 

@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <SDL.h>
 #include <stdbool.h>
+#include "collision.h"
 
 typedef struct Obj
 {

@@ -12,6 +12,7 @@
 typedef struct Ball
 {
 	Hitbox hb;
+	Hitbox prev_hb;
 	Vector2 vel;
 	SDL_Texture* texture;
 } Ball;
@@ -19,9 +20,8 @@ typedef struct Ball
 void init_balls(SDL_Renderer* renderer);
 Ball* get_balls();
 void draw_balls(SDL_Renderer* renderer);
-static void limit_velocity(Ball* ball);
 void ball_bounce(Ball* b, int side, double multiplier);
-void ball_handle_collisions(Ball* b, SDL_Rect prev_col);
+void ball_handle_collisions(Ball* b);
 void move_ball(Ball* b);
 
 #endif

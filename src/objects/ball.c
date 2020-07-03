@@ -18,13 +18,14 @@ void init_balls(SDL_Renderer* renderer)
 {
 	SDL_Surface* surface = SDL_LoadBMP("./assets/player.bmp");
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-   	balls[0].hb = init_hitbox(50, 50, 10, 10);
+   	balls[0].hb      = init_hitbox(50, 50, 10, 10);
+   	balls[0].prev_hb = init_hitbox(50, 50, 10, 10);
 
 	for (int i = 0; i < NUM_BALLS; i++)
 	{
 		balls[i].texture = texture;
-		balls[i].vel.x = 3.0;
-		balls[i].vel.y = 0.5;
+		balls[i].vel.x = 2.0;
+		balls[i].vel.y = 1.5;
 	}
 }
 
@@ -35,19 +36,13 @@ Ball* get_balls()
 
 void draw_balls(SDL_Renderer* renderer)
 {
+	SDL_Rect rect;
 	for (int i = 0; i < NUM_BALLS; i++)
-		SDL_RenderCopyEx(renderer, balls[i].texture, NULL, &(balls[i].col), 0, NULL, SDL_FLIP_NONE);
-}
-
-static void limit_velocity(Ball* ball)
-{
-	double total_vel = sqrt(pow(ball->vel.x, 2) + pow(ball->vel.y, 2));
-	if (total_vel > BALL_MAX_VEL)
 	{
-		double scale = (double)BALL_MAX_VEL / total_vel;
-		ball->vel.x *= scale;
-		ball->vel.y *= scale;
+		rect = hitbox_to_SDLRect((balls[i]).hb);
+		SDL_RenderCopyEx(renderer, balls[i].texture, NULL, &rect, 0, NULL, SDL_FLIP_NONE);
 	}
+
 }
 
 // bound ball 1 for vertical, 2 for horizontal
@@ -59,73 +54,35 @@ void ball_bounce(Ball* b, int side, double multiplier)
 			b->vel.y *= -multiplier;
 }
 
-void ball_handle_collisions(Ball* b, SDL_Rect prev_col)
+void ball_handle_collisions(Ball* b)
 {
 	Player* player;
 	Obj* wall;
+	Vector2 zero_vel = (Vector2){0.0, 0.0};
 
-	/*
-	if (collides_with_player(b->col, &player))
+	if (collides_with_player(b->hb, &player))
 	{
-		int side = snap_to_rect(prev_col, &b->col, player->col);
-		if (side == 1)
-		{
-			if ((b->vel.x < 0 && player->vel.x < 0) || (b->vel.x > 0 && player->vel.x > 0))
-				b->vel.x = player->vel.x;
-			else
-				b->vel.x *= -1.2;
-		}
-		if (side == 2)
-		{
-			if ((b->vel.y < 0 && player->vel.y < 0) || (b->vel.y > 0 && player->vel.y > 0))
-				b->vel.y = player->vel.y;
-			else
-				b->vel.y *= -1.2;
-		}
-	}
-	*/
-
-	if (collides_with_player(b->col, &player))
-	{
-		SIDE side = repel_rect(&b->col, prev_col, player->col);
-		printf("%d\n", side);
-		switch (side)
-		{
-			case LEFT: 
-			case RIGHT: 
-				b->vel.x *= -1.0;
-				break;
-			case TOP: 
-			case BOTTOM: 
-				b->vel.y *= -1.0;
-				break;
-		}
-
-		/*
-		b->vel = vector_scale(b->vel, 1.1);
-		b->vel.x *= -1.0;
-		b->vel.y += player->vel.y * 0.5;
-		*/
+		SIDE side = resolve_collision(&b->hb, b->prev_hb, player->hb, player->prev_hb);
+		bounce(&b->vel, &player->vel, side, 1.2);
 	}
 
-	if (collides_with_wall(b->col, &wall))
+	if (collides_with_wall(b->hb, &wall))
 	{
-		int side = snap_to_rect(prev_col, &b->col, wall->col);
-		ball_bounce(b, side, 1.0);
+		SIDE side = resolve_collision(&b->hb, b->prev_hb, wall->hb, wall->hb);
+		bounce(&b->vel, &zero_vel, side, 1.2);
 	}
 
-	if (collides_with_edge(b->col))
+	if (collides_with_edge(b->hb))
 	{
-		int side = snap_to_edge(&b->col);
-		ball_bounce(b, side, 1.0);
+		SIDE side = resolve_edge_collision(&b->hb);
+		bounce(&b->vel, &zero_vel, side, 1.0);
 	}
 }
 
 void move_ball(Ball* b)
 {
-	SDL_Rect prev_col = b->col;
-
-	apply_velocity(&b->col, b->vel);
-	ball_handle_collisions(b, prev_col);
-	limit_velocity(b);
+	b->prev_hb = b->hb;
+	apply_velocity(&b->hb, b->vel);
+	ball_handle_collisions(b);
+	limit_velocity(&b->vel, 4.5);
 }

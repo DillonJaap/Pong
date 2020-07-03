@@ -11,6 +11,16 @@ Hitbox init_hitbox(int x, int y, int w, int h)
 	return (Hitbox){.top = y, .left = x, .right = x + w, .bottom = y + h};
 }
 
+void print_hitbox(Hitbox hb, char* name)
+{
+	printf("\n");
+	printf("Hitbox (%s):\n", name);
+	printf("\tleft: %d\n", hb.left);
+	printf("\tright: %d\n", hb.right);
+	printf("\ttop: %d\n", hb.top);
+	printf("\tbottom: %d\n", hb.bottom);
+}
+
 SDL_Rect hitbox_to_SDLRect(Hitbox hb)
 {
 	return (SDL_Rect){
@@ -18,7 +28,23 @@ SDL_Rect hitbox_to_SDLRect(Hitbox hb)
 		.y = hb.top,
 	   	.w = hb.right - hb.left,
 		.h = hb.bottom - hb.top
-	}
+	};
+}
+
+void move_hitbox(Hitbox* hb, int dx, int dy)
+{
+	hb->left   += dx;
+	hb->right  += dx;
+	hb->top    += dy;
+	hb->bottom += dy;
+}
+
+void set_hitbox(Hitbox* hb, int x, int y)
+{
+	hb->right  = x + (hb->right - hb->left);
+	hb->left   = x;
+	hb->bottom = y + (hb->bottom - hb->top);
+	hb->top    = y;
 }
 
 bool collides(Hitbox a, Hitbox b)
@@ -34,145 +60,104 @@ bool collides(Hitbox a, Hitbox b)
 	return true;
 }
 
-// find what side of b that a will collide with
-// side that rect a hit (1 for vertical, 2 for horizontal)
-int snap_to_rect(SDL_Rect a_prev, SDL_Rect* a_cur, SDL_Rect b_cur)
-{
-	
-	// the direction vector from a_prev to a_cur
-	Vector2 dir = (Vector2){a_cur->x - a_prev.x, a_cur->y - a_prev.y};
-
-	// distance from horizontal/vertical side of a to h/v side of b scaled by
-	// the x/y of the direction
-	double x_dist = 0.0;
-	double y_dist = 0.0;
-
-	if (dir.x > 0)
-		x_dist = ((a_cur->x + a_cur->w) - b_cur.x);
-	else
-		x_dist = ((b_cur.x + b_cur.w) - a_cur->x);
-
-	if (dir.y > 0)
-		y_dist = ((a_cur->y + a_cur->h) - b_cur.y);
-	else
-		y_dist = ((b_cur.y + b_cur.h) - a_cur->y);
-
-	if ((abs(x_dist * dir.x) < abs(y_dist * dir.y) || dir.y == 0) && dir.x != 0)
-	{
-		if (dir.x > 0)
-			x_dist *= -1;
-		a_cur->x += x_dist;
-		return 1;
-	}
-	else
-	{
-		if (dir.y > 0)
-			y_dist *= -1;
-		a_cur->y += y_dist;
-		return 2;
-	}
-
-	//snap = (Vector2){x_dist, -1 * dir.y * (x_dist / dir.x)};
-	//snap = (Vector2){dir.x * (y_dist / dir.y), y_dist};
-}
 
 // repel rectangle and return the side of b that a hit
-SIDE repel_rect(SDL_Rect* recta, SDL_Rect recta_prev, SDL_Rect rectb)
+int resolve_collision(Hitbox* recta, Hitbox recta_prev, Hitbox rectb, Hitbox rectb_prev)
 {
 	int horizontal_dist = 0;
 	int vertical_dist = 0;
 	SIDE horizontal_side = NO_SIDE;
 	SIDE vertical_side   = NO_SIDE;
 
-	if (recta_prev.x > rectb.x + rectb.w)
+	if (recta_prev.left >= rectb_prev.right)
 	{
-		horizontal_dist = recta->x - (rectb.x + rectb.w);
+		horizontal_dist = rectb.right - recta->left;
+		horizontal_dist++;
 		horizontal_side = RIGHT;
 	}
-	else if (recta_prev.x + recta_prev.w < rectb.x)
+	else if (recta_prev.right <= rectb_prev.left)
 	{
-		horizontal_dist = (recta->x + recta->w) - rectb.x;
+		horizontal_dist =  rectb.left - recta->right;
+		horizontal_dist--;
 		horizontal_side = LEFT;
 	}
-	printf("horizontal dist: %d\n", horizontal_dist);
 
-	if (recta_prev.y > rectb.y + rectb.h)
+	if (recta_prev.top >= rectb_prev.bottom)
 	{
-		vertical_dist = recta->y - (rectb.y + rectb.h);
+		vertical_dist = rectb.bottom - recta->top;
+		vertical_dist++;
 		vertical_side = BOTTOM;
 	}
-	else if (recta_prev.y + recta_prev.h < rectb.y)
+	else if (recta_prev.bottom <= rectb_prev.top)
 	{
-		vertical_dist = (recta_prev.y + recta_prev.h) - rectb.y;
+		vertical_dist = rectb.top - recta->bottom;
+		vertical_dist--;
 		vertical_side = TOP;
 	}
-	printf("vertical dist: %d\n", vertical_dist);
 
-	if (abs(vertical_dist) < abs(horizontal_dist))
+	if (abs(vertical_dist) < abs(horizontal_dist) || vertical_dist == 0)
 	{
-		recta->y += vertical_dist;
-		return vertical_side;
+		move_hitbox(recta, horizontal_dist, 0);
+		return horizontal_side;
 	}
 	else
 	{
-		recta->x += horizontal_dist;
-		return horizontal_side;
+		move_hitbox(recta, 0, vertical_dist);
+		return vertical_side;
 	}
 }
 
 // test if rec collides with right edge of game screen
-bool collides_with_right_edge(SDL_Rect rec)
+bool collides_with_right_edge(Hitbox hb)
 {
-	return (rec.x + rec.w > SCREEN_LENGTH);
+	return (hb.right > SCREEN_LENGTH);
 }
 
-bool collides_with_left_edge(SDL_Rect rec)
+bool collides_with_left_edge(Hitbox hb)
 {
-	return (rec.x < 0);
+	return (hb.left < 0);
 }
 
-bool collides_with_bottom_edge(SDL_Rect rec)
+bool collides_with_bottom_edge(Hitbox hb)
 {
-	return (rec.y + rec.h > SCREEN_HEIGHT);
+	return (hb.bottom > SCREEN_HEIGHT);
 }
 
-bool collides_with_top_edge(SDL_Rect rec)
+bool collides_with_top_edge(Hitbox hb)
 {
-	return (rec.y < 0);
+	return (hb.top < 0);
 }
 // test if rec collides with right edge of game screen
 
-bool collides_with_edge(SDL_Rect rec)
+bool collides_with_edge(Hitbox hb)
 {
-	return (collides_with_right_edge(rec) 
-			|| collides_with_left_edge(rec) 
-			|| collides_with_bottom_edge(rec)
-			|| collides_with_top_edge(rec));
+	return (collides_with_right_edge(hb) 
+			|| collides_with_left_edge(hb) 
+			|| collides_with_bottom_edge(hb)
+			|| collides_with_top_edge(hb));
 }
 
-int snap_to_edge(SDL_Rect* rec)
+SIDE resolve_edge_collision(Hitbox* hb)
 {
 	int ret = 0;
-	if (collides_with_right_edge(*rec))
+	if (collides_with_right_edge(*hb))
 	{
-		rec->x = SCREEN_LENGTH - rec->w;
-		ret += 1;
+		set_hitbox(hb, SCREEN_LENGTH - (hb->right - hb->left), hb->top);
+		return LEFT;
 	}
-	else if (collides_with_left_edge(*rec))
+	else if (collides_with_left_edge(*hb))
 	{
-		rec->x = 0;
-		ret += 1;
+		set_hitbox(hb, 0, hb->top);
+		return RIGHT;
 	}
-	if (collides_with_bottom_edge(*rec))
+	if (collides_with_bottom_edge(*hb))
 	{
-		rec->y = SCREEN_HEIGHT - rec->h;
-		ret += 2;
+		set_hitbox(hb, hb->left, SCREEN_HEIGHT - (hb->bottom - hb->top));
+		return TOP;
 	}
-	else if (collides_with_top_edge(*rec))
+	else if (collides_with_top_edge(*hb))
 	{
-		rec->y = 0;
-		ret += 2;
+		set_hitbox(hb, hb->left, 0);
+		return BOTTOM;
 	}
-
-	return ret;
 }
