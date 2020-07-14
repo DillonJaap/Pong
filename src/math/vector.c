@@ -21,6 +21,40 @@ Vector2 vector_scale(Vector2 v, double scalar)
 	return (Vector2){v.x * scalar, v.y * scalar};
 }
 
+Vector2 vector_add_magnitude(Vector2 v, double amount)
+{
+	return vector_set_magnitude(v, amount + vector_magnitude(v));
+}
+
+Vector2 vector_set_magnitude(Vector2 v, double length)
+{
+	double scale = length / vector_magnitude(v);
+	return (Vector2){v.x * scale, v.y * scale};
+}
+
+
+Vector2 vector_rotate(Vector2 v, double deg)
+{
+	double rad = deg * (M_PI / 180.0); // degrees to radians
+	return (Vector2){
+		(cos(rad) * v.x) - (sin(rad) * v.y),
+		(sin(rad) * v.x) + (cos(rad) * v.y)
+	};
+}
+
+Vector2 vector_set_dir(Vector2 v, double deg)
+{
+	double dir = vector_get_dir(v);
+	v = vector_rotate(v,  -dir);
+	return vector_rotate(v, deg);
+}
+
+double vector_get_dir(Vector2 v)
+{
+	double dir = atan2(v.y, v.x);
+	return dir * (180 / M_PI);
+}
+
 double vector_dot(Vector2 v1, Vector2 v2)
 {
 	return v1.x * v2.x + v1.y * v2.y;
@@ -35,7 +69,7 @@ double vector_cross(Vector2 v1, Vector2 v2)
 
 double vector_magnitude(Vector2 v)
 {
-	return sqrtf(powf(v.x, 2.0) + powf(v.y, 2.0));
+	return sqrt(pow(v.x, 2.0) + pow(v.y, 2.0));
 }
 
 Vector2 get_midpoint(SDL_Rect r)

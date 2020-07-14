@@ -60,8 +60,35 @@ bool collides(Hitbox a, Hitbox b)
 	return true;
 }
 
+bool collides_with_edge(Hitbox hb)
+{
+	return (collides_with_right_edge(hb) 
+			|| collides_with_left_edge(hb) 
+			|| collides_with_bottom_edge(hb)
+			|| collides_with_top_edge(hb));
+}
 
-// repel rectangle and return the side of b that a hit
+bool collides_with_right_edge(Hitbox hb)
+{
+	return (hb.right > SCREEN_LENGTH);
+}
+
+bool collides_with_left_edge(Hitbox hb)
+{
+	return (hb.left < 0);
+}
+
+bool collides_with_bottom_edge(Hitbox hb)
+{
+	return (hb.bottom > SCREEN_HEIGHT);
+}
+
+bool collides_with_top_edge(Hitbox hb)
+{
+	return (hb.top < 0);
+}
+
+// resolve rectangle and return the side of b that a hit
 int resolve_collision(Hitbox* recta, Hitbox recta_prev, Hitbox rectb, Hitbox rectb_prev)
 {
 	int horizontal_dist = 0;
@@ -105,36 +132,6 @@ int resolve_collision(Hitbox* recta, Hitbox recta_prev, Hitbox rectb, Hitbox rec
 		move_hitbox(recta, 0, vertical_dist);
 		return vertical_side;
 	}
-}
-
-// test if rec collides with right edge of game screen
-bool collides_with_right_edge(Hitbox hb)
-{
-	return (hb.right > SCREEN_LENGTH);
-}
-
-bool collides_with_left_edge(Hitbox hb)
-{
-	return (hb.left < 0);
-}
-
-bool collides_with_bottom_edge(Hitbox hb)
-{
-	return (hb.bottom > SCREEN_HEIGHT);
-}
-
-bool collides_with_top_edge(Hitbox hb)
-{
-	return (hb.top < 0);
-}
-// test if rec collides with right edge of game screen
-
-bool collides_with_edge(Hitbox hb)
-{
-	return (collides_with_right_edge(hb) 
-			|| collides_with_left_edge(hb) 
-			|| collides_with_bottom_edge(hb)
-			|| collides_with_top_edge(hb));
 }
 
 SIDE resolve_edge_collision(Hitbox* hb)

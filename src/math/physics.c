@@ -23,19 +23,23 @@ void apply_friction(Vector2* vel, double friction)
 // bounce a off of b on side "side"
 void bounce(Vector2* avel, Vector2* bvel, SIDE side, double multiplier)
 {
-		if ((side == LEFT || side == RIGHT)
-				&& ((avel->x < 0 && bvel->x > 0 && side == RIGHT) 
+	if (side == LEFT || side == RIGHT)
+	{
+		if ((avel->x < 0 && bvel->x > 0 && side == RIGHT) 
 				|| (avel->x > 0 && bvel->x < 0 && side == LEFT)
-				|| bvel->x == 0))
+				|| bvel->x == 0)
 		{
 			avel->x *= -multiplier;
 		}
+	}
 
-		if ((side == BOTTOM || side == TOP)
-				&& ((avel->y < 0 && bvel->y >= 0 && side == BOTTOM)
-				|| (avel->y > 0 && bvel->y <= 0 && side == TOP)
-				|| bvel->y == 0))
+	if (side == BOTTOM || side == TOP)
+	{
+		if ((avel->y < 0 && bvel->y > 0 && side == BOTTOM)
+				|| (avel->y > 0 && bvel->y < 0 && side == TOP)
+				|| bvel->y == 0)
 		{
 			avel->y *= -multiplier;
 		}
+	}
 }

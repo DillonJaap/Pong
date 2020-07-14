@@ -3,3 +3,4 @@
 #define SCREEN_HEIGHT 500
 
 int max(int a, int b);
+int get_mid_point(int a, int b);

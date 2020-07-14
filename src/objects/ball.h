@@ -14,14 +14,16 @@ typedef struct Ball
 	Hitbox hb;
 	Hitbox prev_hb;
 	Vector2 vel;
+	Vector2 pos;
 	SDL_Texture* texture;
 } Ball;
 
-void init_balls(SDL_Renderer* renderer);
 Ball* get_balls();
+void init_balls(SDL_Renderer* renderer);
 void draw_balls(SDL_Renderer* renderer);
-void ball_bounce(Ball* b, int side, double multiplier);
+void update_ball(Ball* b);
+void ball_serve(Ball* b);
 void ball_handle_collisions(Ball* b);
-void move_ball(Ball* b);
+void bounce_off_paddle(Hitbox b, Hitbox p, Vector2* vel, SIDE side);
 
 #endif

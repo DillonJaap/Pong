@@ -13,6 +13,11 @@ typedef struct Vector2
 Vector2 vector_add(Vector2 v1, Vector2 v2);
 Vector2 vector_sub(Vector2 v1, Vector2 v2);
 Vector2 vector_scale(Vector2 v, double scalar);
+Vector2 vector_rotate(Vector2 v, double deg);
+Vector2 vector_set_dir(Vector2 v, double deg);
+Vector2 vector_add_magnitude(Vector2 v, double amount);
+Vector2 vector_set_magnitude(Vector2 v, double length);
+double vector_get_dir(Vector2 v);
 double vector_dot(Vector2 v1, Vector2 v2);
 double vector_cross(Vector2 v1, Vector2 v2);
 double vector_magnitude(Vector2 v);

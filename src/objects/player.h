@@ -19,9 +19,9 @@ Player* get_player1();
 Player* get_player2();
 void init_players(SDL_Renderer* renderer);
 void draw_players(SDL_Renderer* renderer);
+void update_player(Player* p);
 void handle_player_input(Player* p);
 void player_handle_collisions(Player* p);
-void move_player(Player* p);
 bool collides_with_player(Hitbox hb, Player** player);
 
 #endif

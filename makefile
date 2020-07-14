@@ -1,7 +1,7 @@
 CFILES=$(wildcard src/main/*.c)\
 	   	$(wildcard src/math/*.c)\
 	   	$(wildcard src/objects/*.c)\
-	   	$(wildcard src/error/*.c)
+	   	$(wildcard src/error/*.c)\
 
 
 obj=$(CFILES:.c=.o)

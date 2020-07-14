@@ -10,6 +10,7 @@
 #include "ball.h"
 #include "error.h"
 #include "common.h"
+#include "ui.h"
 
 #define SCALE 1
 #define SCREEN_LENGTH 700
@@ -89,6 +90,7 @@ int main(int argc, char** argv)
 	TTF_Font* font = TTF_OpenFont("assets/UbuntuMono-Regular.ttf", 18);
 	check_null((void*)font, NULL);
 
+	init_ui(renderer);
 	init_players(renderer);
 	init_walls(renderer);
 	init_balls(renderer);
@@ -110,19 +112,20 @@ int main(int argc, char** argv)
 		handle_player_input(p2);
 		
 		// move objects
-		move_player(p1);
-		move_player(p2);
-		move_ball(&ball[0]);
+		update_player(p1);
+		update_player(p2);
+		update_ball(&ball[0]);
 
 		// clear screen
-		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
+		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
 		SDL_RenderClear(renderer);
 
 		// draw various game objects and text
+		draw_ui(renderer);
 		draw_players(renderer);
 		draw_balls(renderer);
 		draw_walls(renderer);
-		draw_text(renderer, time_str, font);
+		//draw_text(renderer, time_str, font);
 
 		// update screen
 		SDL_RenderPresent(renderer);
